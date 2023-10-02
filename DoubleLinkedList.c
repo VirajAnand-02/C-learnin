@@ -9,7 +9,6 @@ typedef struct node{
 typedef struct DLL{
     node *head;
     int length;
-
 }DLL;
 
 void addNode(DLL *list, int data){
