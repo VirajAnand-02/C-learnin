@@ -46,8 +46,7 @@ void mergeSort(int arr[], int lower, int upper){
         mergeSort(arr, mid+1, upper);
         // merge
         merge(arr, lower, mid, upper);
-    }    
-
+    }
 }
 int main(){
     int arr[] = {651,65,898,41,6454,516,6,6,65,1,8651,651,651,1,51,651,6};
