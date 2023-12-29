@@ -11,83 +11,74 @@ char infix[MAX];
 char postfix[MAX];
 int post_tracker = 0;
 
-void push(char x){
-	stack[++top] = x;
-}
-char pop(){
-	return stack[top--];
-}
-char top_element(){
-	return stack[top];
+void push(char x) {
+    stack[++top] = x;
 }
 
-int operator(char x){
-	switch (x){
-	case '^':
-		return 5;
-		break;
-	case '/':
-		return 3;
-		break;
-	case '*':
-		return 4;
-		break;
-	case '+':
-		return 2;
-		break;
-	case '-':
-		return 1;
-		break;
-	default:
-		break;
-	}
-	return 0;
+char pop() {
+    if(top == -1) return '\0'; // Handle stack underflow
+    return stack[top--];
 }
 
-int operand(char x){
-	if(x == '*'|| x=='/'||x=='+'||x=='-'||x=='('||x==')'){
-		return 0;
-	}
-	return 1;
+int isOperator(char x) {
+    switch (x) {
+        case '^': return 5;
+        case '/': return 4;
+        case '*': return 4;
+        case '+': return 2;
+        case '-': return 2;
+    }
+    return 0;
 }
 
-void infixToPostfix(){
-	int str_len = strlen(infix);
-	for(int i=0;i<str_len;i++){
-		char scaned = infix[i];
-		if(scaned == '('){
-			push(scaned);
-		}
-		else if(scaned == ')'){
-			while (top_element() != '('){
-				postfix[post_tracker++] = pop();
-			}
-		}
-		else if(operand(scaned)){
-			postfix[post_tracker++] = scaned;
-		}
-		else if(operator(scaned)){
-			if(operator(scaned) >= operator(top_element())){
-				push(scaned);
-			} else {
-				while(operator(scaned) < operator(top_element())){
-					postfix[post_tracker++] = pop();
-				}
-				push(scaned);
-			}
-		}
-		printf("| Scanned: %c | stack: %s | postfix: %s\n", scaned, stack, postfix);
-	}
-	while (top != -1){
-		if(top_element() != '(') postfix[post_tracker++] = pop();
-		else pop();
-	}
+int isOperand(char x) {
+    return (x >= 'a' && x <= 'z') || (x >= 'A' && x <= 'Z') || (x >= '0' && x <= '9');
 }
 
-int main(){
-	printf("Enter infix expression : ");
-	gets(infix);
-	infixToPostfix();
-	printf("%s", postfix);	
-return 0;
+int precedence(char x) {
+    switch (x) {
+        case '^': return 3;
+        case '/': 
+        case '*': return 2;
+        case '+': 
+        case '-': return 1;
+    }
+    return -1;
+}
+
+void infixToPostfix() {
+    int str_len = strlen(infix);
+    for(int i = 0; i < str_len; i++) {
+        char scanned = infix[i];
+        if(isOperand(scanned)) {
+            postfix[post_tracker++] = scanned;
+        } else if(scanned == '(') {
+            push(scanned);
+        } else if(scanned == ')') {
+            while(top != -1 && stack[top] != '(') {
+                postfix[post_tracker++] = pop();
+            }
+            pop(); // Pop the '('
+        } else if(isOperator(scanned)) {
+            while(top != -1 && precedence(scanned) <= precedence(stack[top])) {
+                postfix[post_tracker++] = pop();
+            }
+            push(scanned);
+        }
+    }
+
+    while(top != -1) {
+        if(stack[top] != '(') postfix[post_tracker++] = pop();
+        else pop();
+    }
+    postfix[post_tracker] = '\0'; // Null terminate the postfix expression
+}
+
+int main() {
+    printf("Enter infix expression: ");
+    fgets(infix, MAX, stdin); // Safer alternative to gets
+    infix[strcspn(infix, "\n")] = 0; // Remove newline character
+    infixToPostfix();
+    printf("Postfix expression: %s\n", postfix);
+    return 0;
 }
