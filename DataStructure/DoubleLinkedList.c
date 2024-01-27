@@ -1,44 +1,77 @@
 #include<stdio.h>
 #include<stdlib.h>
-typedef struct node{
+
+typedef struct node {
     int data;
-    struct node *next;
-    struct node *prev;
+    struct node* next;
+    struct node* prev;
 } node;
 
-typedef struct DLL{
-    node *head;
+typedef struct DLL {
+    node* head;
     int length;
-}DLL;
+} DLL;
 
-void addNode(DLL *list, int data){
-    node *tmp = (node *)malloc(sizeof(node));
-    node *current = list->head;
-    for(int i=0; current->next != NULL; i++){
-        current = current->next;
+void addNode(DLL* list, int data) {
+    node* tmp = (node*)malloc(sizeof(node));
+    tmp->data = data;
+    tmp->next = NULL;
+
+    if (list->head == NULL) {
+        tmp->prev = NULL;
+        list->head = tmp;
+    } else {
+        node* current = list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = tmp;
+        tmp->prev = current;
     }
+
+    list->length++;
 }
 
-void initList(DLL *list){
-    list->head->prev=NULL;
-    list->head->next=NULL;
-    list->head->data = 0;
+void initList(DLL* list) {
+    list->head = NULL;
+    list->length = 0;
 }
-void printList(DLL *list){
-    node *current = list->head;
-    for(int i=0; current->next != NULL; i++){
+
+void display(DLL* list) {
+    node* current = list->head;
+    while (current != NULL) {
         printf("%d ", current->data);
         current = current->next;
     }
+    printf("\n");
 }
 
-int main(){
-    node *head = (node *)malloc(sizeof(node));
+void dispRev(DLL* list) {
+    node* curr = list->head;
+    while (curr->next != NULL) {
+        curr = curr->next;
+    }
+    while (curr != NULL) {
+        printf("%d ", curr->data);
+        curr = curr->prev;
+    }
+    printf("\n");
+}
+
+int main() {
     DLL list;
-    list.head = head;
     initList(&list);
     addNode(&list, 2);
-    printList(&list);
-    
-return 0;
+    addNode(&list, 4);
+    addNode(&list, 6);
+    addNode(&list, 0);
+    addNode(&list, -3);
+
+    printf("Forward: ");
+    display(&list);
+
+    printf("Reverse: ");
+    dispRev(&list);
+
+    return 0;
 }

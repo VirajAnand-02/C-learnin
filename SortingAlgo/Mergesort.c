@@ -7,7 +7,6 @@ void merge(int arr[], int const left, int const mid, int const right){
     int i = 0; // left arr pointer
     int j = 0; // right arr pointer
     int k = left; // main array pointer
-
     //copy data into sub array
     for(int i = 0; i < n1;i++) leftArr[i]  = arr[left+i];
     for(int i = 0; i < n2;i++) rightArr[i] = arr[i+mid+1];
@@ -40,20 +39,16 @@ void merge(int arr[], int const left, int const mid, int const right){
 void mergeSort(int arr[], int lower, int upper){
     if(lower<upper){
         int mid = lower + (upper-lower)/2;
-        // sort right
-        mergeSort(arr, lower, mid );
-        // sort left
-        mergeSort(arr, mid+1, upper);
-        // merge
-        merge(arr, lower, mid, upper);
+        mergeSort(arr, lower, mid );// sort right
+        mergeSort(arr, mid+1, upper);// sort left
+        merge(arr, lower, mid, upper);// merge
     }
 }
 int main(){
     int arr[] = {651,65,898,41,6454,516,6,6,65,1,8651,651,651,1,51,651,6};
     int len = sizeof(arr)/sizeof(arr[0]);
     mergeSort(arr, 0, len-1);
-    // printing array
-    for(int i=0;i<len;i++){
+    for(int i=0;i<len;i++){// printing array
         printf("%d, ", arr[i]);
     }
 return 0;

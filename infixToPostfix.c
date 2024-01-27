@@ -65,6 +65,7 @@ void infixToPostfix() {
             }
             push(scanned);
         }
+        printf("%c |%s |%s\n", scanned, stack, postfix );
     }
 
     while(top != -1) {

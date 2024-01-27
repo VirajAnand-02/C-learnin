@@ -54,7 +54,6 @@ node* insertNode(node* root, int data) {
     return root;
 }
 
-
 void logInorder(node* root) {
     if (root->left != NULL) {
         logInorder(root->left);
@@ -92,6 +91,34 @@ int max(int a, int b){
     }
 }
 
+int maxInTree(node *root){
+    node *curr = root;
+    while (curr->right != NULL)
+        curr = curr->right;
+    return curr->data;
+}
+
+int minInTree(node *root){
+    node *curr = root;
+    while (curr->left != NULL)
+        curr = curr->left;
+    return curr->data;
+}
+
+int BTsearch(node *root, int value) {
+    if (root == NULL) {// not found
+        return 0;
+    }
+    if (root->data == value) { // found
+        return 1;
+    }
+    if (value < root->data) {
+        return BTsearch(root->left, value);
+    } else {
+        return BTsearch(root->right, value);
+    }
+}
+
 int treeHeight(node * root){
     if(root == NULL) // Do not exist
         return 0;
@@ -104,10 +131,37 @@ void showTree(node* root) {
     
 }
 
+node* deleteNode(node* root, int value) {
+    if (root == NULL) {
+        printf("Value not found\n");
+        return root;
+    }
+    if (value < root->data) {
+        root->left = deleteNode(root->left, value);
+    } else if (value > root->data) {
+        root->right = deleteNode(root->right, value);
+    } else {
+        if (root->left == NULL) {
+            node* temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            node* temp = root->left;
+            free(root);
+            return temp;
+        }
+        node* temp = findMin(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return root;
+}
+
+
 int main() {
     node* root = NULL;
     int data[] = {50, 30, 70, 20, 40, 60, 80};  // Adjusted order for a more balanced tree
-
+    // insertion
     for (int i = 0; i < 7; i++) {
         root = insertNode(root, data[i]);
     }
@@ -115,18 +169,25 @@ int main() {
     printf("inorder : ");
     logInorder(root);
     printf("\n");
-
+    // print preorder
     printf("preorder : ");
     logPreorder(root);
     printf("\n");
-
+    // print postorder
     printf("postorder : ");
     logPostorder(root);
     printf("\n");
+    //minInTree
+    printf("Min value : %d \n", minInTree(root));
+    //maxInTree
+    printf("Max value : %d \n", maxInTree(root));
+    // search
+    printf("Searching for : %d | ", 20);
+    BTsearch(root, 20) ? printf("Found\n") : printf("Not found\n");
 
-    printf("tree : ");
-    // showTree(root);
-    printf("height : %d\n", treeHeight(root));
+    // printf("tree : \n");
+    // // showTree(root);
+    // printf("height : %d\n", treeHeight(root));
 
     return 0;
 }
